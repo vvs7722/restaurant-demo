@@ -7,34 +7,60 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background-color: #121212;
+            background: #121212;
             color: #fff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
         h1 {
-            font-size: 3em;
+            font-size: 2.5em;
             color: #FFD700;
             text-transform: uppercase;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin: 20px 0;
             letter-spacing: 2px;
         }
-        .menu {
-            max-width: 800px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(5px);
+        
+        /* Search Bar */
+        .search-bar {
+            display: block;
+            margin: 20px auto;
+            padding: 12px;
+            width: 90%;
+            max-width: 500px;
+            font-size: 1em;
+            border-radius: 25px;
+            border: 1px solid #FFD700;
+            background: rgba(255, 215, 0, 0.15);
+            color: #fff;
+            text-align: center;
+            outline: none;
             transition: all 0.3s ease-in-out;
         }
+        .search-bar:focus {
+            background: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Menu Container */
+        .menu {
+            max-width: 90%;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Category Headers */
         .category-header {
-            font-size: 1.8em;
+            font-size: 1.5em;
             margin-top: 25px;
             text-align: left;
             color: #FFD700;
@@ -43,11 +69,13 @@
             border-bottom: 2px solid #FFD700;
             padding-bottom: 5px;
         }
+
+        /* Menu Items */
         .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 12px 15px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.3);
             font-size: 1.2em;
             transition: all 0.3s ease-in-out;
@@ -56,37 +84,42 @@
             border-bottom: none;
         }
         .menu-item:hover {
-            background: rgba(255, 215, 0, 0.15);
-            padding: 12px;
+            background: rgba(255, 215, 0, 0.2);
+            padding: 14px;
             border-radius: 5px;
+            transform: scale(1.02);
         }
-        .gold-text {
-            color: #FFD700;
-            font-weight: 600;
-        }
-        .search-bar {
-            margin-bottom: 20px;
-            padding: 12px;
+
+        /* Call-to-Action Buttons */
+        .cta-btn {
+            display: block;
             width: 90%;
-            max-width: 500px;
-            font-size: 1em;
-            border-radius: 8px;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-transform: uppercase;
             border: none;
-            background-color: #1e1e1e;
-            color: #fff;
-            outline: none;
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+            border-radius: 25px;
+            background: #FFD700;
+            color: #121212;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4);
             transition: all 0.3s ease-in-out;
         }
-        .search-bar:focus {
-            background-color: #222;
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+        .cta-btn:hover {
+            background: #FFC300;
+            transform: scale(1.05);
         }
+
+        /* Footer */
         .footer {
             margin-top: 30px;
             font-size: 0.9em;
             color: rgba(255, 255, 255, 0.6);
         }
+
     </style>
 </head>
 <body>
@@ -95,20 +128,22 @@
     <div class="menu" id="menu">
         <p>Loading menu...</p>
     </div>
-
+    
+    <button class="cta-btn">Reserve a Table</button>
+    
     <div class="footer">© 2025 .RAW Cafe | Designed with ❤️</div>
 
     <script>
     let menuData = [];
 
     async function fetchMenu() {
-        const sheetID = "1O-I4me8zWA7U-NXS9py_7E_7kmJFqbbhRSY8Um9Lyvw"; // Your actual Google Sheet ID
+        const sheetID = "1O-I4me8zWA7U-NXS9py_7E_7kmJFqbbhRSY8Um9Lyvw";
         const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
 
         try {
             const response = await fetch(url);
             const text = await response.text();
-            const json = JSON.parse(text.substr(47).slice(0, -2)); // Parse JSON response
+            const json = JSON.parse(text.substr(47).slice(0, -2));
 
             menuData = json.table.rows.map(row => {
                 const itemName = row.c[0]?.v || "Unknown";
