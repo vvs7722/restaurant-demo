@@ -20,12 +20,19 @@
             margin-bottom: 10px;
         }
         .menu {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+        .category-header {
+            font-size: 1.5em;
+            margin-top: 30px;
+            text-align: left;
+            color: #FFD700;
+            text-transform: uppercase;
         }
         .menu-item {
             display: flex;
@@ -75,7 +82,8 @@
             menuData = json.table.rows.map(row => {
                 const itemName = row.c[0].v;
                 const price = row.c[1].v;
-                return { itemName, price };
+                const category = row.c[2].v; // Get the category
+                return { itemName, price, category };
             });
 
             displayMenu(menuData);
@@ -86,16 +94,39 @@
     }
 
     function displayMenu(menu) {
+        // Group items by category
+        const categories = menu.reduce((acc, item) => {
+            if (!acc[item.category]) {
+                acc[item.category] = [];
+            }
+            acc[item.category].push(item);
+            return acc;
+        }, {});
+
         let menuHTML = "";
-        menu.forEach(item => {
-            menuHTML += `<div class='menu-item'><span>${item.itemName}</span><span class='gold-text'><strong>${item.price}</strong></span></div>`;
-        });
+        for (let category in categories) {
+            menuHTML += `<div class="category-section">
+                            <div class="category-header">${category}</div>`;
+
+            categories[category].forEach(item => {
+                menuHTML += `<div class='menu-item'>
+                                <span>${item.itemName}</span>
+                                <span class='gold-text'><strong>${item.price}</strong></span>
+                             </div>`;
+            });
+
+            menuHTML += "</div>";
+        }
+
         document.getElementById("menu").innerHTML = menuHTML;
     }
 
     function filterMenu() {
         const searchTerm = document.getElementById("search").value.toLowerCase();
-        const filteredMenu = menuData.filter(item => item.itemName.toLowerCase().includes(searchTerm));
+        const filteredMenu = menuData.filter(item => 
+            item.itemName.toLowerCase().includes(searchTerm) || 
+            item.category.toLowerCase().includes(searchTerm)
+        );
         displayMenu(filteredMenu);
     }
 
