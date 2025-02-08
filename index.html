@@ -40,15 +40,29 @@
         .gold-text {
             color: #FFD700;
         }
+        .search-bar {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 80%;
+            max-width: 500px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to <span class="gold-text">.RAW Cafe</span></h1>
+    <input type="text" id="search" class="search-bar" placeholder="Search menu..." oninput="filterMenu()">
     <div class="menu" id="menu">
         <p>Loading menu...</p>
     </div>
 
     <script>
+    let menuData = [];
+
     async function fetchMenu() {
         const sheetID = "1O-I4me8zWA7U-NXS9py_7E_7kmJFqbbhRSY8Um9Lyvw"; // Your actual Google Sheet ID
         const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
@@ -58,18 +72,31 @@
             const text = await response.text();
             const json = JSON.parse(text.substr(47).slice(0, -2)); // Parse JSON response
 
-            let menuHTML = "";
-            json.table.rows.forEach(row => {
+            menuData = json.table.rows.map(row => {
                 const itemName = row.c[0].v;
                 const price = row.c[1].v;
-                menuHTML += `<div class='menu-item'><span>${itemName}</span><span class='gold-text'><strong>${price}</strong></span></div>`;
+                return { itemName, price };
             });
 
-            document.getElementById("menu").innerHTML = menuHTML;
+            displayMenu(menuData);
         } catch (error) {
             console.error("Error fetching menu:", error);
             document.getElementById("menu").innerHTML = "<p>Failed to load menu. Please try again later.</p>";
         }
+    }
+
+    function displayMenu(menu) {
+        let menuHTML = "";
+        menu.forEach(item => {
+            menuHTML += `<div class='menu-item'><span>${item.itemName}</span><span class='gold-text'><strong>${item.price}</strong></span></div>`;
+        });
+        document.getElementById("menu").innerHTML = menuHTML;
+    }
+
+    function filterMenu() {
+        const searchTerm = document.getElementById("search").value.toLowerCase();
+        const filteredMenu = menuData.filter(item => item.itemName.toLowerCase().includes(searchTerm));
+        displayMenu(filteredMenu);
     }
 
     fetchMenu();
