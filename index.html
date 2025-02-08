@@ -6,36 +6,44 @@
     <title>.RAW Cafe Menu</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', serif;
             text-align: center;
-            background-color: #f8f8f8;
+            background-color: #000;
+            color: #fff;
             margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #333;
+            font-size: 2.5em;
+            color: #FFD700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
         .menu {
             max-width: 600px;
             margin: auto;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
         }
         .menu-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #FFD700;
+            font-size: 1.2em;
         }
         .menu-item:last-child {
             border-bottom: none;
         }
+        .gold-text {
+            color: #FFD700;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to .RAW Cafe</h1>
+    <h1>Welcome to <span class="gold-text">.RAW Cafe</span></h1>
     <div class="menu" id="menu">
         <p>Loading menu...</p>
     </div>
@@ -54,7 +62,7 @@
             json.table.rows.forEach(row => {
                 const itemName = row.c[0].v;
                 const price = row.c[1].v;
-                menuHTML += `<div class='menu-item'><span>${itemName}</span><span><strong>${price}</strong></span></div>`;
+                menuHTML += `<div class='menu-item'><span>${itemName}</span><span class='gold-text'><strong>${price}</strong></span></div>`;
             });
 
             document.getElementById("menu").innerHTML = menuHTML;
