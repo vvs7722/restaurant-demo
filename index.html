@@ -3,33 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodinner Menu</title>
+    <title>.RAW Cafe Menu</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f8f8f8;
             margin: 0;
-            padding: 0;
+            padding: 20px;
         }
-        img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-@media (max-width: 768px) {
-    img {
-        width: 100vw; /* Full viewport width */
-        height: 100vh; /* Full viewport height */
-        object-fit: cover; /* Ensures the image covers the full area */
-    }
-}
-
+        h1 {
+            color: #333;
+        }
+        .menu {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to Dodinner</h1>
-    <img src="restaurant/paradisepie.png" alt="Dodinner Menu">
+    <h1>Welcome to .RAW Cafe</h1>
+    <div class="menu" id="menu">
+        <p>Loading menu...</p>
+    </div>
+
+    <script>
+    async function fetchMenu() {
+        const sheetID = "1O-I4me8zWA7U-NXS9py_7E_7kmJFqbbhRSY8Um9Lyvw"; // Your actual Google Sheet ID
+        const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2)); // Parse JSON response
+
+            let menuHTML = "";
+            json.table.rows.forEach(row => {
+                const itemName = row.c[0].v;
+                const price = row.c[1].v;
+                menuHTML += `<div class='menu-item'><span>${itemName}</span><span><strong>${price}</strong></span></div>`;
+            });
+
+            document.getElementById("menu").innerHTML = menuHTML;
+        } catch (error) {
+            console.error("Error fetching menu:", error);
+            document.getElementById("menu").innerHTML = "<p>Failed to load menu. Please try again later.</p>";
+        }
+    }
+
+    fetchMenu();
+    </script>
 </body>
 </html>
