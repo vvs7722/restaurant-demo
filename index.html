@@ -7,66 +7,97 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
+        /* Global Variables for Light & Dark Mode */
+        :root {
+            --bg-color: #121212;
+            --text-color: #fff;
+            --accent-color: #FFD700;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 215, 0, 0.15);
+        }
+        [data-theme="light"] {
+            --bg-color: #f5f5f5;
+            --text-color: #121212;
+            --card-bg: rgba(0, 0, 0, 0.05);
+            --input-bg: rgba(255, 215, 0, 0.3);
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background: #121212;
-            color: #fff;
+            background: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
+            transition: background 0.3s, color 0.3s;
         }
+        
         h1 {
-            font-size: 2.5em;
-            color: #FFD700;
+            font-size: 2.2em;
+            color: var(--accent-color);
             text-transform: uppercase;
             font-weight: 600;
             margin: 20px 0;
-            letter-spacing: 2px;
         }
-        
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 8px 15px;
+            font-size: 1em;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            background: #FFC300;
+        }
+
         /* Search Bar */
         .search-bar {
             display: block;
-            margin: 20px auto;
+            margin: 15px auto;
             padding: 12px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             font-size: 1em;
             border-radius: 25px;
-            border: 1px solid #FFD700;
-            background: rgba(255, 215, 0, 0.15);
-            color: #fff;
+            border: none;
+            background: var(--input-bg);
+            color: var(--text-color);
             text-align: center;
             outline: none;
             transition: all 0.3s ease-in-out;
         }
         .search-bar:focus {
-            background: rgba(255, 215, 0, 0.3);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 4px 10px var(--accent-color);
         }
 
         /* Menu Container */
         .menu {
             max-width: 90%;
             margin: auto;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(10px);
         }
 
         /* Category Headers */
         .category-header {
-            font-size: 1.5em;
-            margin-top: 25px;
+            font-size: 1.4em;
+            margin-top: 20px;
             text-align: left;
-            color: #FFD700;
-            text-transform: uppercase;
+            color: var(--accent-color);
             font-weight: 600;
-            border-bottom: 2px solid #FFD700;
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 5px;
         }
 
@@ -75,9 +106,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
+            padding: 10px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-            font-size: 1.2em;
+            font-size: 1.1em;
             transition: all 0.3s ease-in-out;
         }
         .menu-item:last-child {
@@ -85,51 +116,26 @@
         }
         .menu-item:hover {
             background: rgba(255, 215, 0, 0.2);
-            padding: 14px;
+            padding: 12px;
             border-radius: 5px;
             transform: scale(1.02);
         }
 
-        /* Call-to-Action Buttons */
-        .cta-btn {
-            display: block;
-            width: 90%;
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 12px;
-            font-size: 1.2em;
-            font-weight: 600;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 25px;
-            background: #FFD700;
-            color: #121212;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4);
-            transition: all 0.3s ease-in-out;
-        }
-        .cta-btn:hover {
-            background: #FFC300;
-            transform: scale(1.05);
-        }
-
         /* Footer */
         .footer {
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 0.9em;
             color: rgba(255, 255, 255, 0.6);
         }
-
     </style>
 </head>
-<body>
+<body data-theme="dark">
+    <button class="theme-toggle" onclick="toggleTheme()">Light Mode</button>
     <h1>Welcome to <span class="gold-text">.RAW Cafe</span></h1>
     <input type="text" id="search" class="search-bar" placeholder="Search menu..." oninput="filterMenu()">
     <div class="menu" id="menu">
         <p>Loading menu...</p>
     </div>
-    
-    <button class="cta-btn">Reserve a Table</button>
     
     <div class="footer">© 2025 .RAW Cafe | Designed with ❤️</div>
 
@@ -149,8 +155,12 @@
                 const itemName = row.c[0]?.v || "Unknown";
                 const price = row.c[1]?.v || "N/A";
                 const category = row.c[2]?.v || "Other";
+                
+                // Filter out unwanted "Categories" row
+                if (category.toLowerCase() === "categories") return null;
+
                 return { itemName, price, category };
-            });
+            }).filter(Boolean);
 
             displayMenu(menuData);
         } catch (error) {
@@ -187,6 +197,13 @@
             item.category.toLowerCase().includes(searchTerm)
         );
         displayMenu(filteredMenu);
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const isDark = body.getAttribute("data-theme") === "dark";
+        body.setAttribute("data-theme", isDark ? "light" : "dark");
+        document.querySelector(".theme-toggle").textContent = isDark ? "Dark Mode" : "Light Mode";
     }
 
     fetchMenu();
