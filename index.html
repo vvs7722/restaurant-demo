@@ -12,9 +12,20 @@
             padding: 0;
         }
         img {
-            max-width: 100%;
-            height: auto;
-        }
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    img {
+        width: 100vw; /* Full viewport width */
+        height: 100vh; /* Full viewport height */
+        object-fit: cover; /* Ensures the image covers the full area */
+    }
+}
+
     </style>
 </head>
 <body>
